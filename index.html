@@ -725,8 +725,12 @@ clearTimeout(window.__mxLoadTimer);
             <div class="library-word">${card.word_es || card.word || ''}</div>
             <div class="library-zh">${card.word_zh || ''}</div>
           </div>
+          <button class="library-audio audio-btn small" title="播放發音">🔊</button>
           <button class="library-remove" title="移除">✕</button>
         `;
+        row.querySelector('.library-audio').addEventListener('click', () => {
+          speak(card.word_es || card.word || '');
+        });
         row.querySelector('.library-remove').addEventListener('click', () => {
           removeFromLibrary(date);
           renderLibraryView();
