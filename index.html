@@ -594,16 +594,28 @@ clearTimeout(window.__mxLoadTimer);
     }
   }
 
-  // 「我要學習」：加入單字庫並換到下一張
-  function markLearnAndAdvance(){
+  // 「我要學習」：標記待複習並加入單字庫，停留在目前這張卡片（不換頁）
+  function markLearn(){
     const date = cards[idx].date;
     statusMap[date] = false;
     saveJSON(STATUS_KEY, statusMap);
     addToLibrary(date);
-    if(idx < cards.length - 1){
-      goNext();
-    } else {
-      renderStudyView();
+    refreshStats();
+
+    const indicator = document.querySelector('.status-indicator');
+    if(indicator){
+      indicator.classList.remove('known');
+      indicator.title = '尚未知道';
+    }
+    const statusTag = document.querySelector('.status-tag');
+    if(statusTag){
+      statusTag.classList.remove('known');
+      statusTag.textContent = '待複習';
+    }
+    const learnBtn = document.getElementById('learnBtn');
+    if(learnBtn){
+      learnBtn.disabled = true;
+      learnBtn.textContent = '✓ 已加入單字庫';
     }
   }
 
@@ -678,7 +690,7 @@ clearTimeout(window.__mxLoadTimer);
     }
     document.getElementById('knowBtn').addEventListener('click', markKnown);
     const learnBtn = document.getElementById('learnBtn');
-    if(learnBtn) learnBtn.addEventListener('click', markLearnAndAdvance);
+    if(learnBtn) learnBtn.addEventListener('click', markLearn);
 
     // 滑動切換上一張 / 下一張（手機觸控）
     let touchStartX = null;
