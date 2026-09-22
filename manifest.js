@@ -222,5 +222,15 @@ window.CARD_LIST = [
     desc_zh: "「el chipichipi」是墨西哥中部很生活化的說法，用來形容那種下不停但雨勢很小、綿綿不絕的毛毛雨，尤其在哈拉帕（Xalapa）等城市經常聽到，當地甚至有「chipichipi 之城」的暱稱。這個疊字唸起來俏皮可愛，朋友聊天抱怨天氣時很常會用到。",
     example_es: "No traigo paraguas, pero no importa, nomás está cayendo un chipichipi.",
     example_zh: "我沒帶傘，不過沒關係，只是下著毛毛雨而已。"
+  },
+  {
+    date: "2026-09-22",
+    image: "每日一字/2026-09-22-photo.jpg",
+    word_es: "los chilaquiles",
+    pos: "n.m.pl.",
+    word_zh: "奇拉基萊斯（墨西哥式玉米片早餐）",
+    desc_zh: "用炸過或烤過的玉米片碎塊，淋上紅或綠莎莎醬燉煮至微軟，再撒上起司碎、酸奶油、洋蔥絲，通常還會加顆荷包蛋或雞肉，是墨西哥人週末或宿醉隔天早上最愛吃的國民早餐。紅醬派和綠醬派誰比較道地，幾乎是每個家庭都能吵起來的話題。",
+    example_es: "Los domingos mi mamá siempre nos hace chilaquiles verdes con huevo.",
+    example_zh: "每個星期天我媽媽總是會幫我們做加蛋的綠莎莎奇拉基萊斯。"
   }
 ];
