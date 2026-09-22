@@ -477,6 +477,12 @@ clearTimeout(window.__mxLoadTimer);
   }
 
   function isKnown(date){ return statusMap[date] === true; }
+
+  // 找出第一張「尚未知道」的卡片索引（找不到就回第一張）
+  function findFirstUnknownIndex(){
+    const i = cards.findIndex(c => !isKnown(c.date));
+    return i >= 0 ? i : 0;
+  }
   function inLibrary(date){ return libraryList.indexOf(date) >= 0; }
 
   function addToLibrary(date){
@@ -639,7 +645,11 @@ clearTimeout(window.__mxLoadTimer);
       <button class="home-btn secondary" id="btnLibrary">⭐ 我的單字庫</button>
     `;
     app.appendChild(homeCard);
-    document.getElementById('btnStudy').addEventListener('click', ()=>{ currentView = 'study'; renderView(); });
+    document.getElementById('btnStudy').addEventListener('click', ()=>{
+      idx = findFirstUnknownIndex();
+      currentView = 'study';
+      renderView();
+    });
     document.getElementById('btnLibrary').addEventListener('click', ()=>{ currentView = 'library'; renderView(); });
   }
 
