@@ -39,6 +39,7 @@
     color:#8a8d9c;
     margin-bottom: 18px;
     text-align:center;
+    min-height: 16px;
   }
 
   .progress-row{
@@ -94,21 +95,25 @@
     width:100%; height:100%;
     object-fit:cover;
     display:block;
+    pointer-events:none;
   }
-  .bookmark-btn{
+  .status-indicator{
     position:absolute;
     top:14px; right:14px;
-    width:38px; height:38px;
+    width:54px; height:54px;
     border-radius:50%;
-    border:none;
-    background: rgba(255,255,255,0.92);
+    background: #f7dfa0; /* 米黃底，兩種狀態底色相同 */
     display:flex; align-items:center; justify-content:center;
-    font-size:17px;
-    cursor:pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.18);
-    color:#c9cbd6;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    color:#1b1c22; /* 尚未知道 = 黑色圖示 */
+    transition: color .15s ease;
   }
-  .bookmark-btn.active{ color:#f5a623; }
+  .status-indicator.known{ color:#2e9e5b; } /* 已知道 = 綠色圖示 */
+  .status-indicator svg{
+    width:28px; height:28px;
+    fill: currentColor;
+    display:block;
+  }
 
   .body{
     padding: 20px 24px 22px;
@@ -244,35 +249,19 @@
     background:#1b1c22;
     color:#fff;
   }
+  .btn-learn:disabled{
+    opacity:.55;
+    cursor:default;
+    transform:none !important;
+  }
 
   /* ---- legacy card (old composited image) ---- */
   .legacy-img{
     width:100%;
     display:block;
+    pointer-events:none;
   }
 
-  .nav-row{
-    margin-top: 16px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:18px;
-  }
-  .nav-btn{
-    width:44px; height:44px;
-    border-radius:50%;
-    border:none;
-    background:#fff;
-    color:#1b1c22;
-    font-size:19px;
-    cursor:pointer;
-    box-shadow: 0 6px 14px rgba(20,22,40,0.12);
-    display:flex; align-items:center; justify-content:center;
-    transition: transform .12s ease;
-  }
-  .nav-btn:hover{ transform: scale(1.05); }
-  .nav-btn:disabled{ opacity:.3; cursor:default; }
-  .nav-btn:disabled:hover{ transform:none; }
   .page-counter{
     font-size:13px;
     color:#6c6f80;
@@ -286,20 +275,151 @@
     line-height:1.8;
     font-size:14px;
   }
+
+  /* ---- home page ---- */
+  .home-card{
+    width: var(--card-w);
+    max-width: 96vw;
+    background:#fff;
+    border-radius: 26px;
+    box-shadow: 0 18px 40px rgba(20,22,40,0.14);
+    padding: 48px 28px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    text-align:center;
+  }
+  .home-emoji{ font-size:46px; }
+  .home-title{
+    font-family:'Fredoka', sans-serif;
+    font-size:20px;
+    font-weight:700;
+    color:#20222b;
+    margin:0 0 10px;
+  }
+  .home-btn{
+    width:100%;
+    padding:16px 0;
+    border-radius:16px;
+    font-size:16px;
+    font-weight:700;
+    font-family:'Noto Sans TC', sans-serif;
+    cursor:pointer;
+    border:2px solid #1b1c22;
+    transition: transform .1s ease;
+  }
+  .home-btn:active{ transform: scale(.97); }
+  .home-btn.primary{ background:#1b1c22; color:#fff; }
+  .home-btn.secondary{ background:#fff; color:#1b1c22; }
+
+  /* ---- back link ---- */
+  .back-row{
+    width: var(--card-w);
+    max-width: 96vw;
+    margin-bottom: 12px;
+  }
+  .back-link{
+    background:none;
+    border:none;
+    color:#6c6f80;
+    font-size:13px;
+    cursor:pointer;
+    padding:6px 0;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    font-family:'Noto Sans TC', sans-serif;
+  }
+  .back-link:hover{ color:#1b1c22; }
+
+  /* ---- library page ---- */
+  .library-container{
+    width: var(--card-w);
+    max-width: 96vw;
+  }
+  .library-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .library-card{
+    background:#fff;
+    border-radius:18px;
+    box-shadow: 0 8px 20px rgba(20,22,40,0.1);
+    padding:14px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .library-info{ flex:1; min-width:0; }
+  .library-word{
+    font-family:'Fredoka', sans-serif;
+    font-weight:700;
+    font-size:17px;
+    color:#16171d;
+    word-break: break-word;
+  }
+  .library-zh{
+    font-size:12.5px;
+    color:#8a8d9c;
+    margin-top:2px;
+  }
+  .library-remove{
+    flex:none;
+    width:34px; height:34px;
+    border-radius:50%;
+    border:none;
+    background:#fdeaea;
+    color:#d9483f;
+    font-size:15px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition: background .15s ease;
+  }
+  .library-remove:hover{ background:#f8d3d1; }
+  .library-empty{
+    text-align:center;
+    color:#8a8d9c;
+    font-size:13.5px;
+    line-height:1.8;
+    padding:40px 20px;
+  }
 </style>
 </head>
 <body>
 
   <h1>🇲🇽 墨西哥每日一字 · 單字卡瀏覽器</h1>
-  <div class="subtitle">左右切換瀏覽每天學過的單字卡 · 點喇叭聽發音 · 標記「我知道了 / 我要學習」追蹤進度</div>
+  <div class="subtitle" id="subtitleText"></div>
+  <div class="progress-row" id="progressRow" style="display:none">
+    <span id="okCounter"></span><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><span id="pageCounter"></span>
+  </div>
 
-  <div id="app"></div>
+  <div id="app"><div class="empty" id="loadingMsg">載入中…</div></div>
 
-<script src="manifest.js"></script>
 <script>
+  // 防呆機制：如果 manifest.js 一直載入不出來（例如 OneDrive 檔案還沒完全同步到本機），
+  // 幾秒後明確顯示錯誤訊息，而不是讓畫面一直維持空白。
+  function mxShowTimeoutMsg(){
+    var el = document.getElementById('app');
+    if(el) el.innerHTML = '<div class="empty">⚠️ 單字資料載入逾時。<br>請確認 manifest.js 與此頁面在同一個資料夾，且此裝置的 OneDrive 已完整同步該檔案（非僅雲端佔位檔），再重新整理頁面試試看。</div>';
+  }
+  function mxShowManifestErrorMsg(){
+    clearTimeout(window.__mxLoadTimer);
+    var el = document.getElementById('app');
+    if(el) el.innerHTML = '<div class="empty">⚠️ 找不到 manifest.js，請確認它與「單字卡瀏覽器.html」放在同一個資料夾內。</div>';
+  }
+  window.__mxLoadTimer = setTimeout(mxShowTimeoutMsg, 4000);
+</script>
+<script src="manifest.js" onerror="mxShowManifestErrorMsg()"></script>
+<script>
+clearTimeout(window.__mxLoadTimer);
 (function(){
   const cards = (window.CARD_LIST || []).slice().sort((a,b)=> a.date.localeCompare(b.date));
   const app = document.getElementById('app');
+  const subtitleEl = document.getElementById('subtitleText');
+  const progressRow = document.getElementById('progressRow');
 
   if(!cards.length){
     app.innerHTML = '<div class="empty">目前還沒有任何單字卡。<br>每天排程執行後，新卡片會自動出現在這裡。</div>';
@@ -307,18 +427,18 @@
   }
 
   const STATUS_KEY = 'mx_word_ok_status_v1';       // {date: true(已知) / false(待複習)}
-  const BOOKMARK_KEY = 'mx_word_bookmark_v1';       // {date: true}
+  const LIBRARY_KEY = 'mx_word_library_v1';        // [date, date, ...] 我的單字庫
   const LAST_PAGE_KEY = 'mx_word_last_page_v1';
 
-  function loadJSON(key){
-    try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; }
+  function loadJSON(key, fallback){
+    try{ return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }catch(e){ return fallback; }
   }
   function saveJSON(key, obj){
     localStorage.setItem(key, JSON.stringify(obj));
   }
 
-  let statusMap = loadJSON(STATUS_KEY);
-  let bookmarkMap = loadJSON(BOOKMARK_KEY);
+  let statusMap = loadJSON(STATUS_KEY, {});
+  let libraryList = loadJSON(LIBRARY_KEY, []);
 
   function loadLastIndex(){
     try{
@@ -335,19 +455,7 @@
   }
 
   let idx = loadLastIndex();
-
-  const stage = document.createElement('div');
-  stage.className = 'stage';
-  app.appendChild(stage);
-
-  const progressRow = document.createElement('div');
-  progressRow.className = 'progress-row';
-  progressRow.innerHTML = '<span id="okCounter"></span><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><span id="pageCounter"></span>';
-  app.insertBefore(progressRow, stage);
-
-  const progressFill = document.getElementById('progressFill');
-  const okCounter = document.getElementById('okCounter');
-  const pageCounter = document.getElementById('pageCounter');
+  let currentView = 'home'; // 'home' | 'study' | 'library'
 
   function speak(text){
     if(!text || !('speechSynthesis' in window)) return;
@@ -368,12 +476,26 @@
     speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
   }
 
+  function isKnown(date){ return statusMap[date] === true; }
+  function inLibrary(date){ return libraryList.indexOf(date) >= 0; }
+
+  function addToLibrary(date){
+    if(!inLibrary(date)){
+      libraryList.push(date);
+      saveJSON(LIBRARY_KEY, libraryList);
+    }
+  }
+  function removeFromLibrary(date){
+    libraryList = libraryList.filter(d => d !== date);
+    saveJSON(LIBRARY_KEY, libraryList);
+  }
+
   function refreshStats(){
     const total = cards.length;
     const knownCount = cards.filter(c => statusMap[c.date] === true).length;
-    progressFill.style.width = (knownCount / total * 100).toFixed(1) + '%';
-    okCounter.textContent = '已知道 ' + knownCount + ' / ' + total;
-    pageCounter.textContent = (idx+1) + ' / ' + total;
+    document.getElementById('progressFill').style.width = (knownCount / total * 100).toFixed(1) + '%';
+    document.getElementById('okCounter').textContent = '已知道 ' + knownCount + ' / ' + total;
+    document.getElementById('pageCounter').textContent = (idx+1) + ' / ' + total;
   }
 
   function dayTagText(card, i){
@@ -381,14 +503,16 @@
   }
 
   function renderRichCard(card, i){
-    const known = statusMap[card.date];
-    const bookmarked = !!bookmarkMap[card.date];
-    const statusLabel = known === true ? '已知道' : (known === false ? '待複習' : '尚未標記');
+    const known = isKnown(card.date);
+    const alreadyInLib = inLibrary(card.date);
+    const statusLabel = known ? '已知道' : (statusMap[card.date] === false ? '待複習' : '尚未標記');
     const wrap = document.createElement('div');
     wrap.innerHTML = `
       <div class="media">
         <img src="${card.image}" alt="${card.word_es}">
-        <button class="bookmark-btn ${bookmarked ? 'active' : ''}" id="bookmarkBtn" title="收藏">🔖</button>
+        <div class="status-indicator ${known ? 'known' : ''}" title="${known ? '已知道' : '尚未知道'}">
+          <svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+        </div>
       </div>
       <div class="body">
         <div class="word-row">
@@ -408,42 +532,131 @@
         <div class="example-zh">${card.example_zh || ''}</div>
         <div class="meta-row">
           <span class="day-tag">${dayTagText(card, i)}</span>
-          <span class="status-tag ${known === true ? 'known' : ''}">${statusLabel}</span>
+          <span class="status-tag ${known ? 'known' : ''}">${statusLabel}</span>
         </div>
       </div>
       <div class="actions">
         <button class="btn-know" id="knowBtn">我知道了</button>
-        <button class="btn-learn" id="learnBtn">我要學習</button>
+        <button class="btn-learn" id="learnBtn" ${alreadyInLib ? 'disabled' : ''}>${alreadyInLib ? '✓ 已加入單字庫' : '我要學習'}</button>
       </div>
     `;
     return wrap;
   }
 
   function renderLegacyCard(card, i){
-    const known = statusMap[card.date];
-    const statusLabel = known === true ? '已知道' : (known === false ? '待複習' : '尚未標記');
+    const known = isKnown(card.date);
+    const alreadyInLib = inLibrary(card.date);
+    const statusLabel = known ? '已知道' : (statusMap[card.date] === false ? '待複習' : '尚未標記');
     const wrap = document.createElement('div');
     wrap.innerHTML = `
       <img class="legacy-img" src="每日一字/${card.file}" alt="${card.word || ''}">
       <div class="body" style="padding-top:16px;">
         <div class="meta-row" style="margin-top:0;">
           <span class="day-tag">${dayTagText(card, i)}</span>
-          <span class="status-tag ${known === true ? 'known' : ''}">${statusLabel}</span>
+          <span class="status-tag ${known ? 'known' : ''}">${statusLabel}</span>
         </div>
       </div>
       <div class="actions">
         <button class="btn-know" id="knowBtn">我知道了</button>
-        <button class="btn-learn" id="learnBtn">我要學習</button>
+        <button class="btn-learn" id="learnBtn" ${alreadyInLib ? 'disabled' : ''}>${alreadyInLib ? '✓ 已加入單字庫' : '我要學習'}</button>
       </div>
     `;
     return wrap;
   }
 
-  function render(){
+  // 「我知道了」：可重複切換 —— 第一次按 +1 變綠燈，再按一次 -1 變回黑燈，停留在目前這張卡片
+  function markKnown(){
+    const date = cards[idx].date;
+    const nowKnown = !(statusMap[date] === true);
+    if(nowKnown){
+      statusMap[date] = true;
+    } else {
+      delete statusMap[date];
+    }
+    saveJSON(STATUS_KEY, statusMap);
+    refreshStats();
+
+    const indicator = document.querySelector('.status-indicator');
+    if(indicator){
+      indicator.classList.toggle('known', nowKnown);
+      indicator.title = nowKnown ? '已知道' : '尚未知道';
+    }
+    const statusTag = document.querySelector('.status-tag');
+    if(statusTag){
+      statusTag.classList.toggle('known', nowKnown);
+      statusTag.textContent = nowKnown ? '已知道' : '尚未標記';
+    }
+  }
+
+  // 「我要學習」：加入單字庫並換到下一張
+  function markLearnAndAdvance(){
+    const date = cards[idx].date;
+    statusMap[date] = false;
+    saveJSON(STATUS_KEY, statusMap);
+    addToLibrary(date);
+    if(idx < cards.length - 1){
+      goNext();
+    } else {
+      renderStudyView();
+    }
+  }
+
+  function goTo(newIdx){
+    if(newIdx < 0 || newIdx >= cards.length || newIdx === idx) return;
+    idx = newIdx;
+    renderStudyView();
+  }
+  function goNext(){ goTo(idx+1); }
+  function goPrev(){ goTo(idx-1); }
+
+  document.addEventListener('keydown', (e)=>{
+    if(currentView !== 'study') return;
+    if(e.key === 'ArrowRight') goNext();
+    if(e.key === 'ArrowLeft') goPrev();
+  });
+
+  function renderBackRow(){
+    const row = document.createElement('div');
+    row.className = 'back-row';
+    row.innerHTML = `<button class="back-link" id="backHomeBtn">‹ 返回主頁</button>`;
+    app.appendChild(row);
+    document.getElementById('backHomeBtn').addEventListener('click', ()=>{
+      currentView = 'home';
+      renderView();
+    });
+  }
+
+  function renderHomeView(){
+    subtitleEl.textContent = '選擇你想做的事';
+    progressRow.style.display = 'none';
+    app.innerHTML = '';
+    const homeCard = document.createElement('div');
+    homeCard.className = 'home-card';
+    homeCard.innerHTML = `
+      <div class="home-emoji">🇲🇽</div>
+      <div class="home-title">墨西哥每日一字</div>
+      <button class="home-btn primary" id="btnStudy">📖 單字學習</button>
+      <button class="home-btn secondary" id="btnLibrary">⭐ 我的單字庫</button>
+    `;
+    app.appendChild(homeCard);
+    document.getElementById('btnStudy').addEventListener('click', ()=>{ currentView = 'study'; renderView(); });
+    document.getElementById('btnLibrary').addEventListener('click', ()=>{ currentView = 'library'; renderView(); });
+  }
+
+  function renderStudyView(){
+    subtitleEl.textContent = '左右滑動或鍵盤方向鍵切換 · 點喇叭聽發音 · 標記「我知道了 / 我要學習」追蹤進度';
+    progressRow.style.display = 'flex';
+    app.innerHTML = '';
+    renderBackRow();
+
+    const stage = document.createElement('div');
+    stage.className = 'stage';
+    app.appendChild(stage);
+
     const card = cards[idx];
     const isRich = !!card.word_es;
     const cardEl = document.createElement('div');
-    cardEl.className = 'card';
+    cardEl.className = 'card fading';
     cardEl.appendChild(isRich ? renderRichCard(card, idx) : renderLegacyCard(card, idx));
 
     stage.innerHTML = '';
@@ -452,14 +665,23 @@
     if(isRich){
       document.getElementById('wordAudioBtn').addEventListener('click', () => speak(card.word_es));
       document.getElementById('exampleAudioBtn').addEventListener('click', () => speak(card.example_es));
-      document.getElementById('bookmarkBtn').addEventListener('click', () => {
-        bookmarkMap[card.date] = !bookmarkMap[card.date];
-        saveJSON(BOOKMARK_KEY, bookmarkMap);
-        render();
-      });
     }
-    document.getElementById('knowBtn').addEventListener('click', () => markAndAdvance(true));
-    document.getElementById('learnBtn').addEventListener('click', () => markAndAdvance(false));
+    document.getElementById('knowBtn').addEventListener('click', markKnown);
+    const learnBtn = document.getElementById('learnBtn');
+    if(learnBtn) learnBtn.addEventListener('click', markLearnAndAdvance);
+
+    // 滑動切換上一張 / 下一張（手機觸控）
+    let touchStartX = null;
+    cardEl.addEventListener('touchstart', (e)=>{
+      touchStartX = e.changedTouches[0].clientX;
+    }, {passive:true});
+    cardEl.addEventListener('touchend', (e)=>{
+      if(touchStartX === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      touchStartX = null;
+      if(Math.abs(dx) < 50) return;
+      if(dx < 0) goNext(); else goPrev();
+    }, {passive:true});
 
     refreshStats();
     saveLastIndex();
@@ -468,54 +690,54 @@
     requestAnimationFrame(()=>{ cardEl.classList.remove('fading'); });
   }
 
-  function markAndAdvance(known){
-    statusMap[cards[idx].date] = known;
-    saveJSON(STATUS_KEY, statusMap);
-    if(idx < cards.length - 1){
-      goNext();
+  function renderLibraryView(){
+    subtitleEl.textContent = '收錄你按下「我要學習」的單字，可在此移除';
+    progressRow.style.display = 'none';
+    app.innerHTML = '';
+    renderBackRow();
+
+    const container = document.createElement('div');
+    container.className = 'library-container';
+
+    if(!libraryList.length){
+      container.innerHTML = '<div class="library-empty">尚未加入任何單字。<br>在「單字學習」頁按下「我要學習」即可加入這裡。</div>';
     } else {
-      render();
+      const listEl = document.createElement('div');
+      listEl.className = 'library-list';
+      const sorted = libraryList.slice().sort((a,b)=> b.localeCompare(a));
+      sorted.forEach(date => {
+        const card = cards.find(c => c.date === date);
+        if(!card) return;
+        const row = document.createElement('div');
+        row.className = 'library-card';
+        row.innerHTML = `
+          <div class="library-info">
+            <div class="library-word">${card.word_es || card.word || ''}</div>
+            <div class="library-zh">${card.word_zh || ''}</div>
+          </div>
+          <button class="library-remove" title="移除">✕</button>
+        `;
+        row.querySelector('.library-remove').addEventListener('click', () => {
+          removeFromLibrary(date);
+          renderLibraryView();
+        });
+        listEl.appendChild(row);
+      });
+      container.appendChild(listEl);
     }
+    app.appendChild(container);
   }
 
-  function goTo(newIdx){
-    if(newIdx < 0 || newIdx >= cards.length || newIdx === idx) return;
-    idx = newIdx;
-    render();
+  function renderView(){
+    if(currentView === 'home') renderHomeView();
+    else if(currentView === 'study') renderStudyView();
+    else if(currentView === 'library') renderLibraryView();
   }
-  function goNext(){ goTo(idx+1); }
-  function goPrev(){ goTo(idx-1); }
-
-  const navRow = document.createElement('div');
-  navRow.className = 'nav-row';
-  navRow.innerHTML = `
-    <button class="nav-btn" id="prevBtn">‹</button>
-    <button class="nav-btn" id="nextBtn">›</button>
-  `;
-  app.appendChild(navRow);
-  document.getElementById('prevBtn').addEventListener('click', goPrev);
-  document.getElementById('nextBtn').addEventListener('click', goNext);
-
-  document.addEventListener('keydown', (e)=>{
-    if(e.key === 'ArrowRight') goNext();
-    if(e.key === 'ArrowLeft') goPrev();
-  });
-
-  function updateNavButtons(){
-    document.getElementById('prevBtn').disabled = idx === 0;
-    document.getElementById('nextBtn').disabled = idx === cards.length - 1;
-  }
-
-  const originalRender = render;
-  render = function(){
-    originalRender();
-    updateNavButtons();
-  };
 
   window.addEventListener('beforeunload', saveLastIndex);
   window.addEventListener('pagehide', saveLastIndex);
 
-  render();
+  renderView();
 })();
 </script>
 </body>
