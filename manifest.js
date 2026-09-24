@@ -232,5 +232,15 @@ window.CARD_LIST = [
     desc_zh: "用炸過或烤過的玉米片碎塊，淋上紅或綠莎莎醬燉煮至微軟，再撒上起司碎、酸奶油、洋蔥絲，通常還會加顆荷包蛋或雞肉，是墨西哥人週末或宿醉隔天早上最愛吃的國民早餐。紅醬派和綠醬派誰比較道地，幾乎是每個家庭都能吵起來的話題。",
     example_es: "Los domingos mi mamá siempre nos hace chilaquiles verdes con huevo.",
     example_zh: "每個星期天我媽媽總是會幫我們做加蛋的綠莎莎奇拉基萊斯。"
+  },
+  {
+    date: "2026-09-24",
+    image: "每日一字/2026-09-24-photo.jpg",
+    word_es: "el tianguis",
+    pos: "n.m.",
+    word_zh: "露天市集／傳統市場",
+    desc_zh: "「tianguis」源自納瓦特語，是墨西哥非常有代表性的露天市集。許多社區每週會在固定幾天封街擺攤，從蔬果、衣服到現做小吃都買得到；在地人說要去市場時，常常就是去逛 tianguis。",
+    example_es: "Los martes se pone el tianguis cerca de mi casa y compro fruta ahí.",
+    example_zh: "每週二我家附近會有露天市集，我都在那裡買水果。"
   }
 ];
