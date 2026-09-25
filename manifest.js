@@ -242,5 +242,15 @@ window.CARD_LIST = [
     desc_zh: "「tianguis」源自納瓦特語，是墨西哥非常有代表性的露天市集。許多社區每週會在固定幾天封街擺攤，從蔬果、衣服到現做小吃都買得到；在地人說要去市場時，常常就是去逛 tianguis。",
     example_es: "Los martes se pone el tianguis cerca de mi casa y compro fruta ahí.",
     example_zh: "每週二我家附近會有露天市集，我都在那裡買水果。"
+  },
+  {
+    date: "2026-09-25",
+    image: "每日一字/2026-09-25-photo.jpg",
+    word_es: "la papelería",
+    pos: "n.f.",
+    word_zh: "文具店",
+    desc_zh: "在墨西哥，papelería 是社區裡極常見的文具店，從筆記本、原子筆到影印、列印服務幾乎都找得到。學生開學前、上班要印文件，或臨時需要買膠水和資料夾時，大家常會說要去附近的 papelería。它不只是賣紙，往往也是鄰里日常辦事的小幫手。",
+    example_es: "Voy a la papelería por unas copias y un cuaderno.",
+    example_zh: "我要去文具店印幾份資料，再買一本筆記本。"
   }
 ];
