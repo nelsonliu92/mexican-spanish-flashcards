@@ -183,6 +183,19 @@
     font-size:13.5px;
     line-height:1.65;
     color:#565968;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:3;
+    overflow:hidden;
+  }
+  .desc-zh.expandable{
+    cursor:pointer;
+    border-radius:8px;
+  }
+  .desc-zh.expandable:hover{ color:#2b2d36; }
+  .desc-zh.expandable:focus-visible{
+    outline:2px solid #2e9e5b;
+    outline-offset:3px;
   }
 
   hr.divider{
@@ -210,33 +223,10 @@
     line-height:1.55;
   }
 
-  .meta-row{
-    margin-top:16px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-  }
-  .day-tag{
-    font-size:11.5px;
-    color:#a3a6b3;
-  }
-  .status-tag{
-    font-size:11.5px;
-    font-weight:700;
-    padding:3px 10px;
-    border-radius:999px;
-    background:#eef0f6;
-    color:#a3a6b3;
-  }
-  .status-tag.known{
-    background:#e4f5ea;
-    color:#2e9e5b;
-  }
-
   .actions{
     display:flex;
     gap:10px;
-    padding: 0 24px 22px;
+    padding: 0 24px 8px;
   }
   .actions button{
     flex:1;
@@ -262,6 +252,66 @@
     opacity:.55;
     cursor:default;
     transform:none !important;
+  }
+  .utility-actions{
+    display:flex;
+    gap:10px;
+    padding: 0 24px 22px;
+  }
+  .card .progress-row{
+    width:auto;
+    margin:0;
+    padding:0 24px 12px;
+  }
+  .utility-actions button{
+    flex:1;
+    padding:11px 0;
+    border:1px solid #d7dae4;
+    border-radius:12px;
+    background:#f7f8fb;
+    color:#5f6270;
+    font-size:13.5px;
+    font-weight:700;
+    font-family:'Noto Sans TC', sans-serif;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .utility-actions button:hover{ background:#eceef4; }
+  .utility-actions button:active{ transform:scale(.97); }
+
+  .help-dialog{
+    width:min(88vw, 360px);
+    border:0;
+    border-radius:20px;
+    padding:0;
+    color:#1b1c22;
+    box-shadow:0 22px 60px rgba(20,22,40,.28);
+  }
+  .help-dialog::backdrop{ background:rgba(20,22,40,.48); }
+  .help-dialog-content{ padding:24px; }
+  .help-dialog-title{
+    margin:0 0 12px;
+    font-size:19px;
+    font-weight:900;
+  }
+  .help-dialog-text{
+    margin:0;
+    color:#5f6270;
+    font-size:14px;
+    line-height:1.75;
+  }
+  .help-dialog-close{
+    width:100%;
+    margin-top:20px;
+    padding:11px 0;
+    border:0;
+    border-radius:12px;
+    background:#1b1c22;
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    font-family:'Noto Sans TC', sans-serif;
+    cursor:pointer;
   }
 
   /* ---- legacy card (old composited image) ---- */
@@ -299,7 +349,25 @@
     gap:14px;
     text-align:center;
   }
-  .home-emoji{ font-size:46px; }
+  .home-flag{
+    width:64px;
+    height:42px;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    overflow:hidden;
+    border-radius:4px;
+    box-shadow:0 3px 10px rgba(20,22,40,.18);
+  }
+  .home-flag-green{ background:#006847; }
+  .home-flag-white{
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#9b6a32;
+    font-size:15px;
+  }
+  .home-flag-red{ background:#ce1126; }
   .home-title{
     font-family:'Fredoka', sans-serif;
     font-size:20px;
@@ -346,6 +414,9 @@
   .library-container{
     width: var(--card-w);
     max-width: 96vw;
+    height:680px;
+    display:flex;
+    flex-direction:column;
   }
   .library-list{
     display:flex;
@@ -388,12 +459,16 @@
     transition: background .15s ease;
   }
   .library-remove:hover{ background:#f8d3d1; }
-  .library-empty{
+  .library-page-indicator{
+    margin:auto 0 10px;
+    padding-top:14px;
     text-align:center;
-    color:#8a8d9c;
-    font-size:13.5px;
-    line-height:1.8;
-    padding:40px 20px;
+    color:#6c6f80;
+    font-size:12.5px;
+  }
+  .library-actions{
+    margin-top:0;
+    padding:0;
   }
 </style>
 </head>
@@ -401,11 +476,16 @@
 
   <h1>🇲🇽 墨西哥每日一字 · 單字卡瀏覽器</h1>
   <div class="subtitle" id="subtitleText"></div>
-  <div class="progress-row" id="progressRow" style="display:none">
-    <span id="okCounter"></span><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><span id="pageCounter"></span>
-  </div>
 
   <div id="app"><div class="empty" id="loadingMsg">載入中…</div></div>
+
+  <dialog class="help-dialog" id="helpDialog" aria-labelledby="helpDialogTitle">
+    <div class="help-dialog-content">
+      <h2 class="help-dialog-title" id="helpDialogTitle">操作說明</h2>
+      <p class="help-dialog-text" id="helpDialogText"></p>
+      <button class="help-dialog-close" id="helpDialogClose">我知道了</button>
+    </div>
+  </dialog>
 
 <script>
   // 防呆機制：如果 manifest.js 一直載入不出來（例如 OneDrive 檔案還沒完全同步到本機），
@@ -428,7 +508,6 @@ clearTimeout(window.__mxLoadTimer);
   const cards = (window.CARD_LIST || []).slice().sort((a,b)=> a.date.localeCompare(b.date));
   const app = document.getElementById('app');
   const subtitleEl = document.getElementById('subtitleText');
-  const progressRow = document.getElementById('progressRow');
 
   if(!cards.length){
     app.innerHTML = '<div class="empty">目前還沒有任何單字卡。<br>每天排程執行後，新卡片會自動出現在這裡。</div>';
@@ -464,6 +543,8 @@ clearTimeout(window.__mxLoadTimer);
   }
 
   let idx = loadLastIndex();
+  let libraryPage = 0;
+  const LIBRARY_PAGE_SIZE = 8;
   let currentView = 'home'; // 'home' | 'study' | 'library'
 
   function speak(text){
@@ -505,6 +586,21 @@ clearTimeout(window.__mxLoadTimer);
     saveJSON(LIBRARY_KEY, libraryList);
   }
 
+  function goHome(){
+    currentView = 'home';
+    renderView();
+  }
+
+  function openDialog(title, text){
+    document.getElementById('helpDialogTitle').textContent = title;
+    document.getElementById('helpDialogText').textContent = text;
+    document.getElementById('helpDialog').showModal();
+  }
+
+  function openHelp(text){
+    openDialog('操作說明', text);
+  }
+
   function refreshStats(){
     const total = cards.length;
     const knownCount = cards.filter(c => statusMap[c.date] === true).length;
@@ -513,14 +609,9 @@ clearTimeout(window.__mxLoadTimer);
     document.getElementById('pageCounter').textContent = (idx+1) + ' / ' + total;
   }
 
-  function dayTagText(card, i){
-    return '第 ' + (i+1) + ' 天 · ' + card.date;
-  }
-
   function renderRichCard(card, i){
     const known = isKnown(card.date);
     const alreadyInLib = inLibrary(card.date);
-    const statusLabel = known ? '已知道' : (statusMap[card.date] === false ? '待複習' : '尚未標記');
     const wrap = document.createElement('div');
     wrap.innerHTML = `
       <div class="media">
@@ -538,42 +629,44 @@ clearTimeout(window.__mxLoadTimer);
           <span class="pos-badge">${card.pos || ''}</span>
           <span class="word-zh">${card.word_zh || ''}</span>
         </div>
-        ${card.desc_zh ? `<div class="desc-zh">${card.desc_zh}</div>` : ''}
+        ${card.desc_zh ? `<div class="desc-zh" id="cardDescription">${card.desc_zh}</div>` : ''}
         <hr class="divider">
         <div class="example-row">
           <div class="example-es">"${card.example_es || ''}"</div>
           <button class="audio-btn small" id="exampleAudioBtn" title="播放例句發音">🔊</button>
         </div>
         <div class="example-zh">${card.example_zh || ''}</div>
-        <div class="meta-row">
-          <span class="day-tag">${dayTagText(card, i)}</span>
-          <span class="status-tag ${known ? 'known' : ''}">${statusLabel}</span>
-        </div>
+      </div>
+      <div class="progress-row" id="progressRow">
+        <span id="okCounter"></span><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><span id="pageCounter"></span>
       </div>
       <div class="actions">
         <button class="btn-know" id="knowBtn">我知道了</button>
         <button class="btn-learn" id="learnBtn" ${alreadyInLib ? 'disabled' : ''}>${alreadyInLib ? '✓ 已加入單字庫' : '我要學習'}</button>
+      </div>
+      <div class="utility-actions">
+        <button id="cardHomeBtn">返回主頁</button>
+        <button id="helpBtn">操作說明</button>
       </div>
     `;
     return wrap;
   }
 
   function renderLegacyCard(card, i){
-    const known = isKnown(card.date);
     const alreadyInLib = inLibrary(card.date);
-    const statusLabel = known ? '已知道' : (statusMap[card.date] === false ? '待複習' : '尚未標記');
     const wrap = document.createElement('div');
     wrap.innerHTML = `
       <img class="legacy-img" src="每日一字/${card.file}" alt="${card.word || ''}">
-      <div class="body" style="padding-top:16px;">
-        <div class="meta-row" style="margin-top:0;">
-          <span class="day-tag">${dayTagText(card, i)}</span>
-          <span class="status-tag ${known ? 'known' : ''}">${statusLabel}</span>
-        </div>
+      <div class="progress-row" id="progressRow">
+        <span id="okCounter"></span><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><span id="pageCounter"></span>
       </div>
       <div class="actions">
         <button class="btn-know" id="knowBtn">我知道了</button>
         <button class="btn-learn" id="learnBtn" ${alreadyInLib ? 'disabled' : ''}>${alreadyInLib ? '✓ 已加入單字庫' : '我要學習'}</button>
+      </div>
+      <div class="utility-actions">
+        <button id="cardHomeBtn">返回主頁</button>
+        <button id="helpBtn">操作說明</button>
       </div>
     `;
     return wrap;
@@ -596,11 +689,6 @@ clearTimeout(window.__mxLoadTimer);
       indicator.classList.toggle('known', nowKnown);
       indicator.title = nowKnown ? '已知道' : '尚未知道';
     }
-    const statusTag = document.querySelector('.status-tag');
-    if(statusTag){
-      statusTag.classList.toggle('known', nowKnown);
-      statusTag.textContent = nowKnown ? '已知道' : '尚未標記';
-    }
   }
 
   // 「我要學習」：標記待複習並加入單字庫，停留在目前這張卡片（不換頁）
@@ -615,11 +703,6 @@ clearTimeout(window.__mxLoadTimer);
     if(indicator){
       indicator.classList.remove('known');
       indicator.title = '尚未知道';
-    }
-    const statusTag = document.querySelector('.status-tag');
-    if(statusTag){
-      statusTag.classList.remove('known');
-      statusTag.textContent = '待複習';
     }
     const learnBtn = document.getElementById('learnBtn');
     if(learnBtn){
@@ -637,9 +720,13 @@ clearTimeout(window.__mxLoadTimer);
   function goPrev(){ goTo(idx-1); }
 
   document.addEventListener('keydown', (e)=>{
-    if(currentView !== 'study') return;
-    if(e.key === 'ArrowRight') goNext();
-    if(e.key === 'ArrowLeft') goPrev();
+    if(currentView === 'study'){
+      if(e.key === 'ArrowRight') goNext();
+      if(e.key === 'ArrowLeft') goPrev();
+    } else if(currentView === 'library'){
+      if(e.key === 'ArrowRight') changeLibraryPage(1);
+      if(e.key === 'ArrowLeft') changeLibraryPage(-1);
+    }
   });
 
   function renderBackRow(){
@@ -655,12 +742,15 @@ clearTimeout(window.__mxLoadTimer);
 
   function renderHomeView(){
     subtitleEl.textContent = '選擇你想做的事';
-    progressRow.style.display = 'none';
     app.innerHTML = '';
     const homeCard = document.createElement('div');
     homeCard.className = 'home-card';
     homeCard.innerHTML = `
-      <div class="home-emoji">🇲🇽</div>
+      <div class="home-flag" role="img" aria-label="墨西哥國旗">
+        <span class="home-flag-green"></span>
+        <span class="home-flag-white">●</span>
+        <span class="home-flag-red"></span>
+      </div>
       <div class="home-title">墨西哥每日一字</div>
       <button class="home-btn primary" id="btnStudy">📖 單字學習</button>
       <button class="home-btn secondary" id="btnLibrary">⭐ 我的單字庫</button>
@@ -671,14 +761,16 @@ clearTimeout(window.__mxLoadTimer);
       currentView = 'study';
       renderView();
     });
-    document.getElementById('btnLibrary').addEventListener('click', ()=>{ currentView = 'library'; renderView(); });
+    document.getElementById('btnLibrary').addEventListener('click', ()=>{
+      libraryPage = 0;
+      currentView = 'library';
+      renderView();
+    });
   }
 
   function renderStudyView(){
-    subtitleEl.textContent = '左右滑動或鍵盤方向鍵切換 · 點喇叭聽發音 · 標記「我知道了 / 我要學習」追蹤進度';
-    progressRow.style.display = 'flex';
+    subtitleEl.textContent = '';
     app.innerHTML = '';
-    renderBackRow();
 
     const stage = document.createElement('div');
     stage.className = 'stage';
@@ -696,10 +788,34 @@ clearTimeout(window.__mxLoadTimer);
     if(isRich){
       document.getElementById('wordAudioBtn').addEventListener('click', () => speak(card.word_es));
       document.getElementById('exampleAudioBtn').addEventListener('click', () => speak(card.example_es));
+      const descriptionEl = document.getElementById('cardDescription');
+      if(descriptionEl){
+        requestAnimationFrame(()=>{
+          if(descriptionEl.scrollHeight > descriptionEl.clientHeight + 1){
+            descriptionEl.classList.add('expandable');
+            descriptionEl.tabIndex = 0;
+            descriptionEl.setAttribute('role', 'button');
+            descriptionEl.setAttribute('aria-label', '查看完整單字說明');
+            descriptionEl.title = '點擊查看完整說明';
+            const showFullDescription = ()=> openDialog('完整單字說明', card.desc_zh);
+            descriptionEl.addEventListener('click', showFullDescription);
+            descriptionEl.addEventListener('keydown', (e)=>{
+              if(e.key === 'Enter' || e.key === ' '){
+                e.preventDefault();
+                showFullDescription();
+              }
+            });
+          }
+        });
+      }
     }
     document.getElementById('knowBtn').addEventListener('click', markKnown);
     const learnBtn = document.getElementById('learnBtn');
     if(learnBtn) learnBtn.addEventListener('click', markLearn);
+    document.getElementById('cardHomeBtn').addEventListener('click', goHome);
+    document.getElementById('helpBtn').addEventListener('click', ()=>{
+      openHelp('左右滑動或鍵盤方向鍵切換 · 點喇叭聽發音 · 標記「我知道了 / 我要學習」追蹤進度');
+    });
 
     // 滑動切換上一張 / 下一張（手機觸控）
     let touchStartX = null;
@@ -721,22 +837,29 @@ clearTimeout(window.__mxLoadTimer);
     requestAnimationFrame(()=>{ cardEl.classList.remove('fading'); });
   }
 
+  function changeLibraryPage(delta){
+    const totalPages = Math.max(1, Math.ceil(libraryList.length / LIBRARY_PAGE_SIZE));
+    const nextPage = libraryPage + delta;
+    if(nextPage < 0 || nextPage >= totalPages || nextPage === libraryPage) return;
+    libraryPage = nextPage;
+    renderLibraryView();
+  }
+
   function renderLibraryView(){
     subtitleEl.textContent = '收錄你按下「我要學習」的單字，可在此移除';
-    progressRow.style.display = 'none';
     app.innerHTML = '';
-    renderBackRow();
 
     const container = document.createElement('div');
     container.className = 'library-container';
+    const sorted = libraryList.slice().sort((a,b)=> b.localeCompare(a));
+    const totalPages = Math.max(1, Math.ceil(sorted.length / LIBRARY_PAGE_SIZE));
+    libraryPage = Math.min(libraryPage, totalPages - 1);
+    const pageItems = sorted.slice(libraryPage * LIBRARY_PAGE_SIZE, (libraryPage + 1) * LIBRARY_PAGE_SIZE);
 
-    if(!libraryList.length){
-      container.innerHTML = '<div class="library-empty">尚未加入任何單字。<br>在「單字學習」頁按下「我要學習」即可加入這裡。</div>';
-    } else {
+    if(pageItems.length){
       const listEl = document.createElement('div');
       listEl.className = 'library-list';
-      const sorted = libraryList.slice().sort((a,b)=> b.localeCompare(a));
-      sorted.forEach(date => {
+      pageItems.forEach(date => {
         const card = cards.find(c => c.date === date);
         if(!card) return;
         const row = document.createElement('div');
@@ -760,7 +883,35 @@ clearTimeout(window.__mxLoadTimer);
       });
       container.appendChild(listEl);
     }
+    const pageIndicator = document.createElement('div');
+    pageIndicator.className = 'library-page-indicator';
+    pageIndicator.textContent = (libraryPage + 1) + ' / ' + totalPages;
+    container.appendChild(pageIndicator);
+
+    const libraryActions = document.createElement('div');
+    libraryActions.className = 'utility-actions library-actions';
+    libraryActions.innerHTML = `
+      <button id="libraryHomeBtn">返回主頁</button>
+      <button id="libraryHelpBtn">操作說明</button>
+    `;
+    container.appendChild(libraryActions);
     app.appendChild(container);
+    document.getElementById('libraryHomeBtn').addEventListener('click', goHome);
+    document.getElementById('libraryHelpBtn').addEventListener('click', ()=>{
+      openHelp('尚未加入任何單字。在「單字學習」頁按下「我要學習」即可加入這裡。');
+    });
+
+    let touchStartX = null;
+    container.addEventListener('touchstart', (e)=>{
+      touchStartX = e.changedTouches[0].clientX;
+    }, {passive:true});
+    container.addEventListener('touchend', (e)=>{
+      if(touchStartX === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      touchStartX = null;
+      if(Math.abs(dx) < 50) return;
+      changeLibraryPage(dx < 0 ? 1 : -1);
+    }, {passive:true});
   }
 
   function renderView(){
@@ -768,6 +919,12 @@ clearTimeout(window.__mxLoadTimer);
     else if(currentView === 'study') renderStudyView();
     else if(currentView === 'library') renderLibraryView();
   }
+
+  const helpDialog = document.getElementById('helpDialog');
+  document.getElementById('helpDialogClose').addEventListener('click', ()=> helpDialog.close());
+  helpDialog.addEventListener('click', (e)=>{
+    if(e.target === helpDialog) helpDialog.close();
+  });
 
   window.addEventListener('beforeunload', saveLastIndex);
   window.addEventListener('pagehide', saveLastIndex);
