@@ -508,6 +508,135 @@
     margin-top:0;
     padding:0;
   }
+
+  /* ---- alphabet page ---- */
+  .alpha-media{
+    position:relative;
+    width:100%;
+    aspect-ratio: 16 / 9;
+    background:#c9d3e6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .alpha-tile{
+    width:58%;
+    aspect-ratio: 3 / 2;
+    background:#f4f5f8;
+    border-radius:14px;
+    transform: rotate(-6deg);
+    box-shadow: 0 6px 16px rgba(20,22,40,.18);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+  }
+  .alpha-upper{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:92px;
+    line-height:1;
+    color:#2a2b31;
+  }
+  .alpha-lower{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:54px;
+    line-height:1;
+    color:#3b4a8c;
+    margin-top:26px;
+  }
+  .alpha-type-badge{
+    position:absolute;
+    top:14px; right:14px;
+    padding:5px 12px;
+    border-radius:999px;
+    font-size:12.5px;
+    font-weight:700;
+    background:#f7dfa0;
+    color:#1b1c22;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  .alpha-type-badge.consonant{ background:#bfe3cc; }
+  .alpha-name{
+    font-family:'Fredoka', sans-serif;
+    font-weight:700;
+    font-size:26px;
+    color:#16171d;
+    line-height:1.15;
+  }
+  .alpha-name small{
+    font-family:'Noto Sans TC', sans-serif;
+    font-size:13px;
+    font-weight:500;
+    color:#8a8d9c;
+    margin-left:6px;
+  }
+  .alpha-ipa{
+    font-size:15px;
+    font-weight:700;
+    color:#2b2d36;
+  }
+  .alpha-desc{
+    margin-top:12px;
+    font-size:13.5px;
+    line-height:1.65;
+    color:#565968;
+  }
+  .alpha-examples{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .alpha-example{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .alpha-example img{
+    flex:none;
+    width:58px; height:58px;
+    object-fit:contain;
+    border-radius:12px;
+    background:#fff;
+  }
+  .alpha-example-text{ flex:1; min-width:0; }
+  .alpha-example-es{
+    font-size:18px;
+    font-weight:500;
+    color:#2b2d36;
+    font-family:'Noto Sans TC', sans-serif;
+  }
+  .alpha-example-es b{
+    color:#3a86c8;
+    font-weight:700;
+  }
+  .alpha-example-zh{
+    font-size:12.5px;
+    color:#8a8d9c;
+    margin-top:1px;
+  }
+  .alpha-tabs{
+    display:flex;
+    gap:10px;
+    padding: 0 24px 8px;
+  }
+  .alpha-tabs button{
+    flex:1;
+    padding: 13px 0;
+    border-radius: 14px;
+    font-size:14.5px;
+    font-weight:700;
+    font-family:'Noto Sans TC', sans-serif;
+    cursor:pointer;
+    border:2px solid #1b1c22;
+    background:#fff;
+    color:#1b1c22;
+    transition: transform .1s ease;
+  }
+  .alpha-tabs button.active{ background:#1b1c22; color:#fff; }
+  .alpha-tabs button:active{ transform: scale(.97); }
 </style>
 </head>
 <body>
@@ -583,7 +712,73 @@ clearTimeout(window.__mxLoadTimer);
   let idx = loadLastIndex();
   let libraryPage = 0;
   const LIBRARY_PAGE_SIZE = 8;
-  let currentView = 'home'; // 'home' | 'study' | 'library'
+  let currentView = 'home'; // 'home' | 'study' | 'library' | 'alphabet'
+
+  // ---- 字母與發音資料：{x} 表示範例單字中要以藍色標示的字母 ----
+  const ALPHABET = [
+    {u:'A', l:'a', key:'a', type:'vowel', name:'a', say:'a', ipa:'[a]', desc:'似英文 father 的 [a]，嘴巴張大、短而清楚，不拖長。',
+      ex:[{es:'el {a}guacate', zh:'酪梨'}, {es:'la c{a}sa', zh:'房子'}]},
+    {u:'E', l:'e', key:'e', type:'vowel', name:'e', say:'e', ipa:'[e]', desc:'似英文 bed 的 [e]，短而乾淨，不滑成英文 day 的 [eɪ]。',
+      ex:[{es:'el {e}lote', zh:'玉米（墨西哥烤玉米）'}, {es:'la m{e}sa', zh:'桌子'}]},
+    {u:'I', l:'i', key:'i', type:'vowel', name:'i', say:'i', ipa:'[i]', desc:'似英文 see 的 [i]，但更短促，嘴角往兩側拉。',
+      ex:[{es:'la {i}glesia', zh:'教堂'}, {es:'el ch{i}le', zh:'辣椒'}]},
+    {u:'O', l:'o', key:'o', type:'vowel', name:'o', say:'o', ipa:'[o]', desc:'似英文 or 的 [o]，嘴唇圓，不滑成英文 go 的 [oʊ]。',
+      ex:[{es:'el {o}jo', zh:'眼睛'}, {es:'el s{o}l', zh:'太陽'}]},
+    {u:'U', l:'u', key:'u', type:'vowel', name:'u', say:'u', ipa:'[u]', desc:'似英文 cool 的 [uː]，嘴唇圓而突出，但比英文短。',
+      ex:[{es:'la l{u}na', zh:'月亮'}, {es:'la {u}va', zh:'葡萄'}]},
+
+    {u:'B', l:'b', key:'b', type:'consonant', name:'be', say:'be', ipa:'[b]', desc:'似英文 b。兩個母音之間嘴唇不完全閉合，聲音較柔。墨西哥 B 與 V 發音完全相同。',
+      ex:[{es:'el {b}urro', zh:'驢子'}, {es:'el {b}arco', zh:'船'}]},
+    {u:'C', l:'c', key:'c', type:'consonant', name:'ce', say:'ce', ipa:'[k] / [s]', desc:'接 a、o、u 時發 [k]；接 e、i 時發 [s]（墨西哥不發西班牙的咬舌音 [θ]）。',
+      ex:[{es:'el {c}afé', zh:'咖啡 [k]'}, {es:'la {c}ebolla', zh:'洋蔥 [s]'}]},
+    {u:'D', l:'d', key:'d', type:'consonant', name:'de', say:'de', ipa:'[d]', desc:'舌尖輕碰上排門牙背面發 [d]；兩個母音之間變柔，接近英文 this 的 th。',
+      ex:[{es:'el {d}inero', zh:'錢'}, {es:'el {d}ulce', zh:'糖果'}]},
+    {u:'F', l:'f', key:'f', type:'consonant', name:'efe', say:'efe', ipa:'[f]', desc:'同英文 f，上排門牙輕碰下唇送氣。',
+      ex:[{es:'la {f}lor', zh:'花'}, {es:'la {f}resa', zh:'草莓'}]},
+    {u:'G', l:'g', key:'g', type:'consonant', name:'ge', say:'ge', ipa:'[g] / [x]', desc:'接 a、o、u 時發 [g]；接 e、i 時發喉音 [x]，像用力哈氣的 h。',
+      ex:[{es:'el {g}ato', zh:'貓 [g]'}, {es:'el {g}irasol', zh:'向日葵 [x]'}]},
+    {u:'H', l:'h', key:'h', type:'consonant', name:'hache', say:'hache', ipa:'（不發音）', desc:'啞音，完全不發音。hue 開頭唸起來像英文的 we。（CH 組合則發 [tʃ]，同英文 church。）',
+      ex:[{es:'el {h}elado', zh:'冰淇淋'}, {es:'el {h}uevo', zh:'蛋'}]},
+    {u:'J', l:'j', key:'j', type:'consonant', name:'jota', say:'jota', ipa:'[x]', desc:'喉嚨後方送氣的 [x]，像用力哈氣的 h；墨西哥口音比西班牙輕柔。',
+      ex:[{es:'el {j}itomate', zh:'番茄（墨西哥用語）'}, {es:'el {j}ugo', zh:'果汁'}]},
+    {u:'K', l:'k', key:'k', type:'consonant', name:'ka', say:'ka', ipa:'[k]', desc:'發 [k]，不送氣；只出現在外來語。',
+      ex:[{es:'el {k}iwi', zh:'奇異果'}, {es:'el {k}oala', zh:'無尾熊'}]},
+    {u:'L', l:'l', key:'l', type:'consonant', name:'ele', say:'ele', ipa:'[l]', desc:'似英文 l，但舌尖清楚貼上齒齦，字尾也不含糊。雙寫 LL 在墨西哥唸成像 Y。',
+      ex:[{es:'el {l}imón', zh:'萊姆（綠檸檬）'}, {es:'la {l}eche', zh:'牛奶'}]},
+    {u:'M', l:'m', key:'m', type:'consonant', name:'eme', say:'eme', ipa:'[m]', desc:'同英文 m，雙唇閉合發鼻音。',
+      ex:[{es:'la {m}ano', zh:'手'}, {es:'el {m}ango', zh:'芒果'}]},
+    {u:'N', l:'n', key:'n', type:'consonant', name:'ene', say:'ene', ipa:'[n]', desc:'同英文 n，舌尖抵上齒齦發鼻音。',
+      ex:[{es:'la {n}aranja', zh:'柳橙'}, {es:'la {n}ube', zh:'雲'}]},
+    {u:'Ñ', l:'ñ', key:'ny', type:'consonant', name:'eñe', say:'eñe', ipa:'[ɲ]', desc:'似英文 canyon 的 ny，像「ㄋ」加「ㄧ」快速連讀。西語特有字母。',
+      ex:[{es:'la pi{ñ}a', zh:'鳳梨'}, {es:'el ni{ñ}o', zh:'男孩'}]},
+    {u:'P', l:'p', key:'p', type:'consonant', name:'pe', say:'pe', ipa:'[p]', desc:'似英文 p，但不送氣，聽起來介於 p 與 b 之間。',
+      ex:[{es:'el {p}an', zh:'麵包'}, {es:'el {p}erro', zh:'狗'}]},
+    {u:'Q', l:'q', key:'q', type:'consonant', name:'cu', say:'cu', ipa:'[k]', desc:'只出現在 que、qui，發 [k]，後面的 u 不發音。',
+      ex:[{es:'el {q}ueso', zh:'起司'}, {es:'la {q}uesadilla', zh:'起司薄餅'}]},
+    {u:'R', l:'r', key:'r', type:'consonant', name:'erre', say:'erre', ipa:'[ɾ] / [r]', desc:'字中單一 r 舌尖輕彈一下 [ɾ]；字首或雙寫 rr 要連續彈舌 [r]。',
+      ex:[{es:'la pe{r}a', zh:'梨子（輕彈）'}, {es:'el ca{rr}o', zh:'汽車（彈舌）'}]},
+    {u:'S', l:'s', key:'s', type:'consonant', name:'ese', say:'ese', ipa:'[s]', desc:'同英文 s，清晰的 [s]，墨西哥字尾的 s 也會清楚唸出。',
+      ex:[{es:'la {s}andía', zh:'西瓜'}, {es:'la {s}illa', zh:'椅子'}]},
+    {u:'T', l:'t', key:'t', type:'consonant', name:'te', say:'te', ipa:'[t]', desc:'舌尖碰上排門牙背面，不送氣，比英文 t 輕脆。',
+      ex:[{es:'el {t}aco', zh:'塔可'}, {es:'la {t}ortilla', zh:'玉米餅'}]},
+    {u:'V', l:'v', key:'v', type:'consonant', name:'ve', say:'ve', ipa:'[b]', desc:'與 B 同音 [b]，不發英文 v 的咬唇音。墨西哥常叫它「ve chica」以區分 B（be grande）。',
+      ex:[{es:'la {v}aca', zh:'乳牛'}, {es:'la {v}entana', zh:'窗戶'}]},
+    {u:'W', l:'w', key:'w', type:'consonant', name:'doble u', say:'doble u', ipa:'[w]', desc:'只出現在外來語，發 [w]，同英文 w。墨西哥也常叫它「doble ve」。',
+      ex:[{es:'el {w}afle', zh:'鬆餅'}, {es:'el sánd{w}ich', zh:'三明治'}]},
+    {u:'X', l:'x', key:'x', type:'consonant', name:'equis', say:'equis', ipa:'[ks] / [x]', desc:'一般發 [ks]；但墨西哥許多地名保留古音唸 [x]，例如 México 唸成「Méjico」。',
+      ex:[{es:'el ta{x}i', zh:'計程車 [ks]'}, {es:'Mé{x}ico', zh:'墨西哥 [x]'}]},
+    {u:'Y', l:'y', key:'y', type:'consonant', name:'ye', say:'ye', ipa:'[ʝ] / [i]', desc:'當子音時發 [ʝ]，似英文 yes 但更用力；單獨或在字尾（y、hoy）時發 [i]。',
+      ex:[{es:'el {y}ogur', zh:'優格'}, {es:'la pla{y}a', zh:'海灘'}]},
+    {u:'Z', l:'z', key:'z', type:'consonant', name:'zeta', say:'zeta', ipa:'[s]', desc:'墨西哥發 [s]，與 S 相同，不發英文 z 的 [z]，也不發西班牙的咬舌音。',
+      ex:[{es:'el {z}apato', zh:'鞋子'}, {es:'la {z}anahoria', zh:'紅蘿蔔'}]}
+  ];
+  const ALPHA_LAST_KEY = 'mx_alpha_last_v1';
+  let alphaIdx = 0;
+  try{
+    const savedAlpha = localStorage.getItem(ALPHA_LAST_KEY);
+    const f = ALPHABET.findIndex(a => a.key === savedAlpha);
+    if(f >= 0) alphaIdx = f;
+  }catch(e){}
 
   function speak(text){
     if(!text || !('speechSynthesis' in window)) return;
@@ -764,6 +959,9 @@ clearTimeout(window.__mxLoadTimer);
     } else if(currentView === 'library'){
       if(e.key === 'ArrowRight') changeLibraryPage(1);
       if(e.key === 'ArrowLeft') changeLibraryPage(-1);
+    } else if(currentView === 'alphabet'){
+      if(e.key === 'ArrowRight') alphaGoTo(alphaIdx + 1);
+      if(e.key === 'ArrowLeft') alphaGoTo(alphaIdx - 1);
     }
   });
 
@@ -792,8 +990,13 @@ clearTimeout(window.__mxLoadTimer);
       <div class="home-title">墨西哥西語單字庫</div>
       <button class="home-btn primary" id="btnStudy">📖 單字學習</button>
       <button class="home-btn secondary" id="btnLibrary">⭐ 我的單字庫</button>
+      <button class="home-btn secondary" id="btnAlphabet">🔤 字母與發音</button>
     `;
     app.appendChild(homeCard);
+    document.getElementById('btnAlphabet').addEventListener('click', ()=>{
+      currentView = 'alphabet';
+      renderView();
+    });
     document.getElementById('btnStudy').addEventListener('click', ()=>{
       idx = findFirstUnknownIndex();
       currentView = 'study';
@@ -952,10 +1155,116 @@ clearTimeout(window.__mxLoadTimer);
     }, {passive:true});
   }
 
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  }
+  function alphaHighlight(es){
+    return escapeHTML(es).replace(/\{([^}]+)\}/g, '<b>$1</b>');
+  }
+  function alphaPlain(es){ return es.replace(/[{}]/g, ''); }
+
+  function alphaGoTo(newIdx){
+    if(newIdx < 0 || newIdx >= ALPHABET.length || newIdx === alphaIdx) return;
+    alphaIdx = newIdx;
+    renderAlphabetView();
+  }
+
+  function renderAlphabetView(){
+    subtitleEl.textContent = '';
+    app.innerHTML = '';
+    const item = ALPHABET[alphaIdx];
+    const isVowel = item.type === 'vowel';
+    const group = ALPHABET.filter(a => a.type === item.type);
+    const posInGroup = group.indexOf(item) + 1;
+    const vowelCount = ALPHABET.filter(a => a.type === 'vowel').length;
+    const consonantCount = ALPHABET.length - vowelCount;
+
+    const stage = document.createElement('div');
+    stage.className = 'stage';
+    app.appendChild(stage);
+
+    const cardEl = document.createElement('div');
+    cardEl.className = 'card fading';
+    cardEl.innerHTML = `
+      <div class="alpha-media" role="img" aria-label="字母 ${item.u} ${item.l}">
+        <div class="alpha-tile">
+          <span class="alpha-upper">${item.u}</span><span class="alpha-lower">${item.l}</span>
+        </div>
+        <div class="alpha-type-badge ${isVowel ? '' : 'consonant'}">${isVowel ? '母音' : '子音'}</div>
+      </div>
+      <div class="body">
+        <div class="word-row">
+          <div class="alpha-name">${item.u} ${item.l}<small>唸作「${escapeHTML(item.name)}」</small></div>
+          <button class="audio-btn" id="alphaLetterAudio" title="播放字母發音">🔊</button>
+        </div>
+        <div class="pos-row">
+          <span class="pos-badge">發音</span>
+          <span class="alpha-ipa">${escapeHTML(item.ipa)}</span>
+        </div>
+        <div class="alpha-desc">${escapeHTML(item.desc)}</div>
+        <hr class="divider">
+        <div class="alpha-examples">
+          ${item.ex.map((ex, n) => `
+            <div class="alpha-example">
+              <img src="alphabet/${item.key}${n+1}.jpg" alt="${escapeHTML(ex.zh)}">
+              <div class="alpha-example-text">
+                <div class="alpha-example-es">${alphaHighlight(ex.es)}</div>
+                <div class="alpha-example-zh">${escapeHTML(ex.zh)}</div>
+              </div>
+              <button class="audio-btn small alpha-ex-audio" data-n="${n}" title="播放單字發音">🔊</button>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="progress-row">
+        <span>${isVowel ? '母音' : '子音'} ${posInGroup} / ${group.length}</span><div class="progress-track"><div class="progress-fill" style="width:${((alphaIdx+1)/ALPHABET.length*100).toFixed(1)}%"></div></div><span class="page-counter" style="min-width:auto">${alphaIdx+1} / ${ALPHABET.length}</span>
+      </div>
+      <div class="alpha-tabs">
+        <button id="alphaVowelTab" class="${isVowel ? 'active' : ''}">母音（${vowelCount}）</button>
+        <button id="alphaConsonantTab" class="${isVowel ? '' : 'active'}">子音（${consonantCount}）</button>
+      </div>
+      <div class="utility-actions">
+        <button id="alphaHomeBtn">返回主頁</button>
+        <button id="alphaHelpBtn">操作說明</button>
+      </div>
+    `;
+    stage.appendChild(cardEl);
+
+    document.getElementById('alphaLetterAudio').addEventListener('click', ()=> speak(item.say));
+    cardEl.querySelectorAll('.alpha-ex-audio').forEach(btn => {
+      btn.addEventListener('click', ()=> speak(alphaPlain(item.ex[+btn.dataset.n].es)));
+    });
+    document.getElementById('alphaVowelTab').addEventListener('click', ()=>{
+      if(!isVowel) alphaGoTo(ALPHABET.findIndex(a => a.type === 'vowel'));
+    });
+    document.getElementById('alphaConsonantTab').addEventListener('click', ()=>{
+      if(isVowel) alphaGoTo(ALPHABET.findIndex(a => a.type === 'consonant'));
+    });
+    document.getElementById('alphaHomeBtn').addEventListener('click', goHome);
+    document.getElementById('alphaHelpBtn').addEventListener('click', ()=>{
+      openHelp('左右滑動或鍵盤方向鍵切換字母 · 點「母音 / 子音」直接跳到該組 · 點喇叭聽字母與範例單字發音 · 藍色字母為該字母在單字中的位置');
+    });
+
+    let touchStartX = null;
+    cardEl.addEventListener('touchstart', (e)=>{
+      touchStartX = e.changedTouches[0].clientX;
+    }, {passive:true});
+    cardEl.addEventListener('touchend', (e)=>{
+      if(touchStartX === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      touchStartX = null;
+      if(Math.abs(dx) < 50) return;
+      alphaGoTo(alphaIdx + (dx < 0 ? 1 : -1));
+    }, {passive:true});
+
+    try{ localStorage.setItem(ALPHA_LAST_KEY, item.key); }catch(e){}
+    requestAnimationFrame(()=>{ cardEl.classList.remove('fading'); });
+  }
+
   function renderView(){
     if(currentView === 'home') renderHomeView();
     else if(currentView === 'study') renderStudyView();
     else if(currentView === 'library') renderLibraryView();
+    else if(currentView === 'alphabet') renderAlphabetView();
   }
 
   const helpDialog = document.getElementById('helpDialog');
