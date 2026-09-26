@@ -1,0 +1,9 @@
+# Orion / local preview artifacts
+.playwright-cli/
+*.log
+
+# Local development files
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
