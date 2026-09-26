@@ -427,6 +427,9 @@
   .home-btn:active{ transform: scale(.97); }
   .home-btn.primary{ background:#1b1c22; color:#fff; }
   .home-btn.secondary{ background:#fff; color:#1b1c22; }
+  .home-btn.flag-green{ background:#006847; color:#fff; border-color:#1b1c22; }
+  .home-btn.flag-white{ background:#fff; color:#1b1c22; border-color:#1b1c22; }
+  .home-btn.flag-red{ background:#ce1126; color:#fff; border-color:#1b1c22; }
 
   /* ---- back link ---- */
   .back-row{
@@ -988,9 +991,9 @@ clearTimeout(window.__mxLoadTimer);
         <span class="home-flag-red"></span>
       </div>
       <div class="home-title">墨西哥西語單字庫</div>
-      <button class="home-btn primary" id="btnAlphabet">🔤 字母與發音</button>
-      <button class="home-btn secondary" id="btnStudy">📖 單字學習</button>
-      <button class="home-btn secondary" id="btnLibrary">⭐ 我的單字庫</button>
+      <button class="home-btn flag-green" id="btnAlphabet">🔤 字母與發音</button>
+      <button class="home-btn flag-white" id="btnStudy">📖 單字學習</button>
+      <button class="home-btn flag-red" id="btnLibrary">⭐ 我的單字庫</button>
     `;
     app.appendChild(homeCard);
     document.getElementById('btnAlphabet').addEventListener('click', ()=>{
